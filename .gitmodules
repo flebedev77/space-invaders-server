@@ -1,0 +1,3 @@
+[submodule "client_src"]
+	path = client_src
+	url = https://github.com/flebedev77/space-invaders-multiplayer.git
