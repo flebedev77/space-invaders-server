@@ -6,6 +6,6 @@ cd client_src/config
 ./config-web-unix.sh
 cd ../build/web
 make
-cp *.html ../../../client/
-cp *.js ../../../client/
-cp *.wasm ../../../client/
+# cp *.html ../../../client/compiled/ # We don't need the html, because we have our own modified version
+cp *.js ../../../client/compiled/
+cp *.wasm ../../../client/compiled/

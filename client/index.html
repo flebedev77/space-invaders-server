@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders</title>
+    <style>
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <iframe src="compiled/space-invaders.html" frameborder="0"></iframe>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"
+        integrity="sha512-8BHxHDLsOHx+flIrQ0DrZcea7MkHqRU5GbTHmbdzMRnAaoCIkZ97PqZcXJkKZckMMhqfoeaJE+DNUVuyoQsO3Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const frame = document.querySelector("iframe");
+        frame.onload = function () {
+            const frameDocument = frame.contentWindow.document;
+
+            const socket = io();
+            const keys = {
+                left: false,
+                right: false,
+                shoot: false
+            }
+
+            const opponentKeys = {
+                left: false,
+                right: false,
+                shoot: false
+            }
+
+            const keymap = {
+                left: {
+                    key: "a",
+                    code: "KeyA",
+                    which: 65,
+                    keyCode: 65
+                },
+                right: {
+                    key: "d",
+                    code: "KeyD",
+                    which: 68,
+                    keyCode: 68
+                },
+                shoot: {
+                    key: " ",
+                    code: "Space",
+                    which: 32,
+                    keyCode: 32
+                }
+            }
+
+            function keyEvent(key, down) {
+                switch (key) {
+                    case "ArrowLeft":
+                        keys.left = down;
+                        break;
+                    case "ArrowRight":
+                        keys.right = down;
+                        break;
+                    case "Control":
+                        keys.shoot = down;
+                        break;
+                }
+                socket.emit("move", keys);
+            }
+            frameDocument.addEventListener("keydown", (key) => {
+                keyEvent(key.key, true);
+            })
+            frameDocument.addEventListener("keyup", (key) => {
+                keyEvent(key.key, false);
+            })
+
+            socket.on("move", (moveKeys) => {
+                if (typeof moveKeys != "object") return;
+
+                for (const k in moveKeys) {
+                    opponentKeys[k] = moveKeys[k];
+                    const keyEvent = new KeyboardEvent((moveKeys[k]) ? "keydown" : "keyup", {
+                        bubbles: true,
+                        cancelable: true,
+                        key: keymap[k].key,
+                        code: keymap[k].code,
+                        keyCode: keymap[k].keyCode,
+                        which: keymap[k].which
+                    });
+
+                    frameDocument.body.dispatchEvent(keyEvent);
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

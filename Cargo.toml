@@ -4,3 +4,15 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+axum = "0.7.9"
+serde = { version = "1.0.216", features = ["derive"] }
+serde_json = "1.0"
+socketioxide = { version = "0.15.1", features = [
+    "extensions",
+    "state",
+]}
+tokio = { version = "1.42.0", features = ["rt-multi-thread", "macros"] }
+tower-http = { version = "0.5.0", features = ["cors", "fs"] }
+tower = "0.5.2"
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
